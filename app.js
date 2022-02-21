@@ -1,11 +1,24 @@
 
+
+const pickerOpts = {
+       types: [
+              {
+                     description: 'Audio',
+                     accept: {
+                            'audio/*': ['.mp3']
+                     }
+              },
+       ],
+       excludeAcceptAllOption: true,
+       multiple: false
+};
+
+let fileHandle;
+
 /**
  * File class
  * @param fileHandle
  */
-
-let fileHandle;
-
 class File {
 
        constructor() {
@@ -13,12 +26,14 @@ class File {
 
        static async openFile() {
               // open file picker
-              [fileHandle] = await window.showOpenFilePicker();
+              [fileHandle] = await window.showOpenFilePicker(pickerOpts);
 
               // get file contents
-              const fileData = await fileHandle.getFile();
-              const textFile = await fileData.text();
-              textarea.innerText = textFile;
+              const file = await fileHandle.getFile();
+              const url = URL.createObjectURL(file);
+              music.src = url;
+              music.play();
+              document.title = file.name;
        }
 
        static async saveFile() {
@@ -42,12 +57,12 @@ btnOpen.addEventListener("click", async function () {
        await File.openFile();
 });
 
-btnSave.addEventListener("click", async function () {
+btnStart.addEventListener("click", async function () {
        await File.saveFile();
        alert("save");
 });
 
-btnSaveAs.addEventListener("click", async function () {
+btnStop.addEventListener("click", async function () {
        await File.saveAsFile();
        alert("save");
 });
